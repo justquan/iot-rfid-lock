@@ -5,6 +5,10 @@
 
 //set vs push. 'set' changes a value in the firebase to a value. Push appends a compltely new variable to the path location
 
+//Notes for UUID
+//In Firebase, I should create each student with a UUID using a UUID generator.
+//When checking the Firebase list, I should check every UUID.
+
 //Libraries
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
@@ -25,7 +29,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 int statuss = 0;
 
 void setup() {
-  Serial.begin(9600); //9600 baud
+    Serial.begin(9600); //9600 baud
   SPI.begin();      // Initiate  SPI bus
   mfrc522.PCD_Init();   // Initiate MFRC522
 
@@ -39,6 +43,8 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP()); //Prints IP
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); //Start Firebase with defined credentials
+  //mfrc522.PCD_WriteRegister(RFCfgReg, (0x07<<4));//supposed to apparently increase gain of the RC522 and extend the range?
+
 }
 
 void loop() {
