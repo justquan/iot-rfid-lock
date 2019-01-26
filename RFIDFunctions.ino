@@ -44,9 +44,12 @@ void checkRFID(String currentUID) {
     Serial.println();
     statuss = 1;
   }
-
   else   {
     Serial.println(" Access Denied ");
     delay(1000);
   }
 }
+//
+//Note: to find capacitative handle values, use something like :
+//long total1 =  handleExit.capacitiveSensor(30); 
+
