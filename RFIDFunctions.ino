@@ -10,7 +10,7 @@ String getCurrentRFID() {
   {
     return "none";  //return "none" string
   }
-  
+
   //Show UID on serial monitor
   Serial.println();
   Serial.print("Received UID tag :");
@@ -26,7 +26,7 @@ String getCurrentRFID() {
     content.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
   content.toUpperCase();
-  
+
   Serial.println();
   String returnedString = content.substring(1);//takes off first character
   return returnedString;
@@ -51,5 +51,22 @@ void checkRFID(String currentUID) {
 }
 //
 //Note: to find capacitative handle values, use something like :
-//long total1 =  handleExit.capacitiveSensor(30); 
+//long total1 =  handleExit.capacitiveSensor(30);
+
+//prints capacitative sensor value for enter handle. for debugging.
+void printEnterHandle() {
+  long enterVal = handleEnter.capacitiveSensor(30);
+  Serial.print("Enter handle value: ");
+  Serial.println(enterVal);
+  delay(250);
+}
+
+//prints capacitative sensor value for exit handle. for debugging.
+void printExitHandle() {
+  long exitVal = handleExit.capacitiveSensor(30);
+  Serial.print("Exit handle value: ");
+  Serial.println(exitVal);
+  delay(10);
+}
+
 
