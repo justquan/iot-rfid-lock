@@ -31,25 +31,25 @@ String getCurrentRFID() {
   String returnedString = content.substring(1);//takes off first character
   return returnedString;
 }
-
-//OLD. use checkrfidexit and checkrfidenter()
-void checkRFID(String currentUID) {
-  String databaseUID = getFirebaseData("/Students/0001/UID"); //TODO: change to search through list of all students
-  Serial.print("Current UID: ");
-  Serial.println(currentUID);
-  Serial.print("UID in database: ");
-  Serial.println(databaseUID);
-  if (currentUID == databaseUID) //change UID of the card that you want to give access
-  {
-    Serial.println(" Access Granted ");
-    Serial.println();
-    statuss = 1;
-  }
-  else   {
-    Serial.println(" Access Denied ");
-    delay(1000);
-  }
-}
+//
+////OLD. use checkrfidexit and checkrfidenter()
+//void checkRFID(String currentUID) {
+//  String databaseUID = getFirebaseData("/Students/0001/UID"); //TODO: change to search through list of all students
+//  Serial.print("Current UID: ");
+//  Serial.println(currentUID);
+//  Serial.print("UID in database: ");
+//  Serial.println(databaseUID);
+//  if (currentUID == databaseUID) //change UID of the card that you want to give access
+//  {
+//    Serial.println(" Access Granted ");
+//    Serial.println();
+//    statuss = 1;
+//  }
+//  else   {
+//    Serial.println(" Access Denied ");
+//    delay(1000);
+//  }
+//}
 
 //UNTESTED 2/10
 //For processing RFID UID when entering
@@ -73,6 +73,6 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
 
 //For processing RFID UID when exiting
 void checkRFIDExit (String sensedUID) {
-
+    //TODO: add code / function updating firebase values
 }
 

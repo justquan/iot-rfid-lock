@@ -71,23 +71,22 @@ void setup() {
   //  handleExit.set_CS_AutocaL_Millis(0xFFFFFFFF); // turn off autocalibrate on channel 1
 }
 
-//NE
-void loop() {
+//NEW, UNTESTED 2/10
+void loop() { //TODO: fix. also conditional on the fact taht person entering must touch door handle before rfid reader picks up UID.
   delay(200); //TODO inefficient. 200 ms delay
-  updateEnterState();
+  updateEnterState(); //checks door handles
   if (!enterState && exitHandleTouched()) { //if exit handle last touched and currently touched
-    doorUnlock(); //still needs to sense rfid at some point. TODO: still sense RFID
+    doorUnlock(); //still needs to sense rfid at some point, coded further below.
   }
-
   String sensedUID = getCurrentRFID(); //gets current RFID card from reader
   if (sensedUID == "none") { //if no valid RFID detected by reader
     return; //goes back to start of the loop.
   }
   else {  //there is an RFID element present
-    if (enterState) {
+    if (enterState) { //if enter side handle was touched last
       checkRFIDEnter(sensedUID);  //passes on UID to a method to check if the UID is valid and to perform the appropriate actions
     }
-    else {
+    else {  //if exit side handle was touched last
       checkRFIDExit(sensedUID);
     }
   }
