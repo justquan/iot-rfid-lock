@@ -32,8 +32,9 @@ String getCurrentRFID() {
   return returnedString;
 }
 
+//OLD. use checkrfidexit and checkrfidenter()
 void checkRFID(String currentUID) {
-  String databaseUID = getFirebaseData("/Students/0001/UID"); //change later to search through list of all students
+  String databaseUID = getFirebaseData("/Students/0001/UID"); //TODO: change to search through list of all students
   Serial.print("Current UID: ");
   Serial.println(currentUID);
   Serial.print("UID in database: ");
@@ -49,24 +50,29 @@ void checkRFID(String currentUID) {
     delay(1000);
   }
 }
-//
-//Note: to find capacitative handle values, use something like :
-//long total1 =  handleExit.capacitiveSensor(30);
 
-//prints capacitative sensor value for enter handle. for debugging.
-void printEnterHandle() {
-  long enterVal = handleEnter.capacitiveSensor(30);
-  Serial.print("Enter handle value: ");
-  Serial.println(enterVal);
-  delay(250);
+//UNTESTED 2/10
+//For processing RFID UID when entering
+void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign with +
+  Serial.print("Sensed UID: ");
+  Serial.println(sensedUID);
+  String studentName = getFirebaseStudentName(sensedUID);
+  if (studentName = "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
+    Serial.println(" Access Denied. Name doesn't exist. ");
+    delay(500);
+  }
+  else if (checkStudentInBuilding(sensedUID)) {  //if student is already in the building, then deny access.
+    Serial.println(" Access Denied. Student is already in building. ");
+    delay(500);
+  }
+  else {
+    //TODO: add code / function updating firebase values
+    doorUnlock();
+  }
 }
 
-//prints capacitative sensor value for exit handle. for debugging.
-void printExitHandle() {
-  long exitVal = handleExit.capacitiveSensor(30);
-  Serial.print("Exit handle value: ");
-  Serial.println(exitVal);
-  delay(10);
-}
+//For processing RFID UID when exiting
+void checkRFIDExit (String sensedUID) {
 
+}
 

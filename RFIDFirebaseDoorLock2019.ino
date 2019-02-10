@@ -1,5 +1,3 @@
-//jan 16. 2019. combo of RFID and ESP Firebase. First real attempt
-
 //IMPORTANT NOTE: Make sure to include firebase-arduino library (https://github.com/FirebaseExtended/firebase-arduino)
 //Also need to download this Arduino json library for firebase to work (https://github.com/bblanchon/ArduinoJson)
 
@@ -39,7 +37,6 @@
 //RFID Pins
 #define SS_PIN 4  //4 goes to D2 on the ESP
 #define RST_PIN 5 //5 goes to D1 on the ESP
-
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 
 //FIX PIN VALUES:  https://arduino.stackexchange.com/questions/34135/in-esp-12e-nodemcu-whats-the-pin-number-of-a0
@@ -48,6 +45,10 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 CapacitiveSensor handleEnter = CapacitiveSensor(15, 0); // 500-1000 ohm resistor between pins D8 (send) and D3 (receive).
 CapacitiveSensor handleExit = CapacitiveSensor(15, 2); // 500-1000 ohm resistor between pins D8 (send) and D4 (receive).
 int statuss = 0;
+long enterThreshold = 100;
+long exitThreshold = 100;
+boolean enterState = true;  //true = last person was entering. false = last person was exiting.
+String lockBuildingName = "Building A"; //building name associated with this particular lock
 
 void setup() {
   Serial.begin(9600); //9600 baud
@@ -66,31 +67,54 @@ void setup() {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); //Start Firebase with defined credentials
   //mfrc522.PCD_WriteRegister(RFCfgReg, (0x07<<4));//supposed to apparently increase gain of the RC522 and extend the range?
 
-//  handleEnter.set_CS_AutocaL_Millis(0xFFFFFFFF);  // turn off autocalibrate on channel 1
-//  handleExit.set_CS_AutocaL_Millis(0xFFFFFFFF); // turn off autocalibrate on channel 1
+  //  handleEnter.set_CS_AutocaL_Millis(0xFFFFFFFF);  // turn off autocalibrate on channel 1
+  //  handleExit.set_CS_AutocaL_Millis(0xFFFFFFFF); // turn off autocalibrate on channel 1
 }
 
+//NE
 void loop() {
+  delay(200); //TODO inefficient. 200 ms delay
+  updateEnterState();
+  if (!enterState && exitHandleTouched()) { //if exit handle last touched and currently touched
+    doorUnlock(); //still needs to sense rfid at some point. TODO: still sense RFID
+  }
 
-printEnterHandle();
-printExitHandle();
-
-//  Serial.print("Exit handle value: ");
-//  Serial.println(exitVal);
-//  delay(10);
-  //  Serial.println(getFirebaseData("/Students/80 C4 12 BB/Name"));
-  //  delay(50);
-  //  Serial.println(getFirebaseData("/Students/0001/Title"));
-  //  delay(50);
-  //  Serial.println(getFirebaseData("/Students/eee"));
-  //  delay(50);
-
-  //  delay(300); //TODO inefficient
-  //  String currentUID = getCurrentRFID();
-  //  if (currentUID == "none") { //if no valid RFID detected
-  //    return;
-  //  }
-  //  else {
-  //    checkRFID(currentUID);
-  //  }
+  String sensedUID = getCurrentRFID(); //gets current RFID card from reader
+  if (sensedUID == "none") { //if no valid RFID detected by reader
+    return; //goes back to start of the loop.
+  }
+  else {  //there is an RFID element present
+    if (enterState) {
+      checkRFIDEnter(sensedUID);  //passes on UID to a method to check if the UID is valid and to perform the appropriate actions
+    }
+    else {
+      checkRFIDExit(sensedUID);
+    }
+  }
 }
+//
+//void loop() {
+//
+//    checkExit();  //If person is exiting, open the door automatically. TODO: add code for sending RFID in certain scenarios.
+//    delay(200); //TODO inefficient. 200 ms delay.
+//    String sensedUID = getCurrentRFID(); //gets current RFID card from reader
+//    if (sensedUID == "none") { //if no valid RFID detected by reader
+//      return; //goes back to start of the loop.
+//    }
+//    else {  //there is an RFID element present
+//      checkRFID(sensedUID);  //passes on UID to a method to check if the UID is valid and to perform the appropriate actions
+//    }
+//}
+
+//Trying to receive data:
+//  Serial.println(getFirebaseData("/Students/80 C4 12 BB/Name"));
+//  delay(50);
+//  Serial.println(getFirebaseData("/Students/0001/Title"));
+//  delay(50);
+//  Serial.println(getFirebaseData("/Students/eee"));
+//  delay(50);
+
+//Printing capacitative sensor values:
+//printEnterHandle();
+//printExitHandle();
+
