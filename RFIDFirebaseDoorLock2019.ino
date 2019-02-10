@@ -2,13 +2,13 @@
 //Also need to download this Arduino json library for firebase to work (https://github.com/bblanchon/ArduinoJson)
 
 //IMPORTANT NOTE 2: If getting error related to JSON files, make sure you are using an earlier of the ArduinoJson library (5 or earlier), NOT THE BETA VERSION
-//set vs push. 'set' changes a value in the firebase to a value. Push appends a compltely new variable to the path location
 
 //Notes for UUID
 //In Firebase, I should create each student with a UUID using a UUID generator.
 //When checking the Firebase list, I should check every UUID.
 
-////Pin reassignments for ESP
+//Pin reassignments for ESP
+//FIX PIN VALUES:  https://arduino.stackexchange.com/questions/34135/in-esp-12e-nodemcu-whats-the-pin-number-of-a0
 //static const uint8_t D0   = 16;
 //static const uint8_t D1   = 5;
 //static const uint8_t D2   = 4;
@@ -39,14 +39,13 @@
 #define RST_PIN 5 //5 goes to D1 on the ESP
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 
-//FIX PIN VALUES:  https://arduino.stackexchange.com/questions/34135/in-esp-12e-nodemcu-whats-the-pin-number-of-a0
-
 //(send pin , receive pin). Connect handle to receive pin side of resistor.
 CapacitiveSensor handleEnter = CapacitiveSensor(15, 0); // 500-1000 ohm resistor between pins D8 (send) and D3 (receive).
 CapacitiveSensor handleExit = CapacitiveSensor(15, 2); // 500-1000 ohm resistor between pins D8 (send) and D4 (receive).
-int statuss = 0;
+
 long enterThreshold = 100;
 long exitThreshold = 100;
+int unlockDelay = 3000; //unlock delay in ms
 boolean enterState = true;  //true = last person was entering. false = last person was exiting.
 String lockBuildingName = "Building A"; //building name associated with this particular lock
 
@@ -72,7 +71,7 @@ void setup() {
 }
 
 //NEW, UNTESTED 2/10
-void loop() { //TODO: fix. also conditional on the fact taht person entering must touch door handle before rfid reader picks up UID.
+void loop() { //TODO: fix. also conditional on the fact that person entering must touch door handle before rfid reader picks up UID.
   delay(200); //TODO inefficient. 200 ms delay
   updateEnterState(); //checks door handles
   if (!enterState && exitHandleTouched()) { //if exit handle last touched and currently touched

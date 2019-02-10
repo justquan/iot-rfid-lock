@@ -33,6 +33,9 @@
 
 void doorUnlock() {
   Serial.println("Unlocking Door.");
-  //TODO: make code unlocking door for 5 seconds
+  //TODO: code for unlocking
+  delay(unlockDelay);
+  Serial.println("Locking Door.");
+  //TODO: make code locking door for 5 seconds
 }
 

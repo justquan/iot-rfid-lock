@@ -1,16 +1,13 @@
 
 String getCurrentRFID() {
   // Look for new cards
-  if ( ! mfrc522.PICC_IsNewCardPresent()) //If no card is detected
-  {
+  if (!mfrc522.PICC_IsNewCardPresent()) {//If no card is detected
     return "none";  //return "none" string
   }
   // Select one of the cards
-  else if ( ! mfrc522.PICC_ReadCardSerial())
-  {
+  else if (!mfrc522.PICC_ReadCardSerial()) {
     return "none";  //return "none" string
   }
-
   //Show UID on serial monitor
   Serial.println();
   Serial.print("Received UID tag :");
@@ -31,25 +28,6 @@ String getCurrentRFID() {
   String returnedString = content.substring(1);//takes off first character
   return returnedString;
 }
-//
-////OLD. use checkrfidexit and checkrfidenter()
-//void checkRFID(String currentUID) {
-//  String databaseUID = getFirebaseData("/Students/0001/UID"); //TODO: change to search through list of all students
-//  Serial.print("Current UID: ");
-//  Serial.println(currentUID);
-//  Serial.print("UID in database: ");
-//  Serial.println(databaseUID);
-//  if (currentUID == databaseUID) //change UID of the card that you want to give access
-//  {
-//    Serial.println(" Access Granted ");
-//    Serial.println();
-//    statuss = 1;
-//  }
-//  else   {
-//    Serial.println(" Access Denied ");
-//    delay(1000);
-//  }
-//}
 
 //UNTESTED 2/10
 //For processing RFID UID when entering
@@ -66,13 +44,39 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
     delay(500);
   }
   else {
+    updateFBStudentStatus(sensedUID, "in");
+    updateFBStudentLastLoc(sensedUID, lockBuildingName);
     //TODO: add code / function updating firebase values
     doorUnlock();
+    //    TODO: test
   }
 }
 
 //For processing RFID UID when exiting
 void checkRFIDExit (String sensedUID) {
-    //TODO: add code / function updating firebase values
+  updateFBStudentStatus(sensedUID, "out");
+  updateFBStudentLastLoc(sensedUID, lockBuildingName); //redundant
+  //TODO: add code / function updating firebase values
 }
+
+
+
+//
+////OLD. use checkrfidexit() and checkrfidenter()
+//void checkRFID(String currentUID) {
+//  String databaseUID = getFirebaseData("/Students/0001/UID"); //TODO: change to search through list of all students
+//  Serial.print("Current UID: ");
+//  Serial.println(currentUID);
+//  Serial.print("UID in database: ");
+//  Serial.println(databaseUID);
+//  if (currentUID == databaseUID) //change UID of the card that you want to give access
+//  {
+//    Serial.println(" Access Granted ");
+//    Serial.println();
+//  }
+//  else   {
+//    Serial.println(" Access Denied ");
+//    delay(1000);
+//  }
+//}
 
