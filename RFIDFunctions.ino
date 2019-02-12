@@ -1,4 +1,3 @@
-
 String getCurrentRFID() {
   // Look for new cards
   if (!mfrc522.PICC_IsNewCardPresent()) {//If no card is detected
@@ -13,7 +12,6 @@ String getCurrentRFID() {
   Serial.print("Received UID tag :");
   String content = "";
   byte letter;
-
   //Puts RFID code into a string "XX XX XX XX"
   for (byte i = 0; i < mfrc522.uid.size; i++)
   {
@@ -35,18 +33,17 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
   Serial.print("Sensed UID: ");
   Serial.println(sensedUID);
   String studentName = getFirebaseStudentName(sensedUID);
-  if (studentName = "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
+  if (studentName == "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
     Serial.println(" Access Denied. Name doesn't exist. ");
-    delay(500);
+    delay(500); //TODO: remove later, inefficient
   }
   else if (checkStudentInBuilding(sensedUID)) {  //if student is already in the building, then deny access.
     Serial.println(" Access Denied. Student is already in building. ");
-    delay(500);
+    delay(500); //TODO: remove later, inefficient
   }
   else {
     updateFBStudentStatus(sensedUID, "in");
     updateFBStudentLastLoc(sensedUID, lockBuildingName);
-    //TODO: add code / function updating firebase values
     doorUnlock();
     //    TODO: test
   }
@@ -58,8 +55,6 @@ void checkRFIDExit (String sensedUID) {
   updateFBStudentLastLoc(sensedUID, lockBuildingName); //redundant
   //TODO: add code / function updating firebase values
 }
-
-
 
 //
 ////OLD. use checkrfidexit() and checkrfidenter()

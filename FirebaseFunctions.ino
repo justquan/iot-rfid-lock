@@ -8,7 +8,7 @@
 //set vs push. 'set' changes a value in the firebase to a value. Push appends a compltely new variable to the path location
 
 
-String generateStatusPath (String UID){
+String generateStatusPath (String UID) {
   String statusFirebasePath = "/Students/" + UID + "/status/"; //concatonates sensed UID to "/Students/" to create checkable PATH
   return statusFirebasePath;
 }
@@ -25,7 +25,7 @@ String generateStudentNamePath(String UID) {
 
 String getFirebaseData (String path) {
   String firebaseData = Firebase.getString(path);  //Gets string at PATH
-  checkFirebaseFail("getting UID from Firebase");  //Check is Firebase.getString(String path) failed
+  checkFirebaseFail("getting data from Firebase");  //Check is Firebase.getString(String path) failed
   //  yield();
   delay(100); //inefficient
   return firebaseData; //returns UID
@@ -47,10 +47,10 @@ boolean checkStudentInBuilding (String sensedUID) {
   String studentLastLoc = getFirebaseData(lastlocFirebasePath);  //checked student's lastloc(like 'Building A') according to the database/ If UID doesn't exist in Firebase, returns empty string.
   checkFirebaseFail("getting student lastloc and status from Firebase");  //Check is Firebase.getString(String path) failed
   if (studentStatus == "in" && studentLastLoc == lockBuildingName) {  //if student is in building affiliated with this particular lock device
-    return false;
+    return true;  //student IS in this building
   }
-  else {
-    return true;
+  else {  //student IS NOT in this building
+    return false;
   }
 }
 
@@ -58,19 +58,27 @@ void checkFirebaseFail(String msg) { //string is the message / the instance in w
   if (Firebase.failed()) {  //if the last Firebase function failed
     Serial.print("Firebase failed while ");
     Serial.print(msg);  //prints given message / place where Firebase failed
-    Serial.println(Firebase.error()); //Sometimes doesn't print the error
+    Serial.println(Firebase.error()); //Sometimes doesn't print any error but error still exists
   }
 }
 
 //TODO: TEST. UNTESTED 2/10. ststring() untested
 void updateFBStudentStatus(String UID, String updatedVal) {
-//  String path = statusFirebasePath(UID);
-//  Firebase.setString(path, updatedVal);
+  String path = generateStatusPath(UID);
+  Firebase.setString(path, updatedVal);
+  Serial.print("Updated Firebase status at");
+  Serial.print(path);
+  Serial.print(" with value: ");
+  Serial.println(updatedVal);
 }
 
 //TODO: test
 void updateFBStudentLastLoc(String UID, String updatedVal) {
-//  String path = generateLastLocPath (UID);
-//  Firebase.setString(path, updatedVal);
+  String path = generateLastLocPath (UID);
+  Firebase.setString(path, updatedVal);
+  Serial.print("Updated Firebase lastloc at");
+  Serial.print(path);
+  Serial.print(" with value: ");
+  Serial.println(updatedVal);
 }
 

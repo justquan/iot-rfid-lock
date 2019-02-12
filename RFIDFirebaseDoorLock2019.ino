@@ -43,11 +43,11 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 CapacitiveSensor handleEnter = CapacitiveSensor(15, 0); // 500-1000 ohm resistor between pins D8 (send) and D3 (receive).
 CapacitiveSensor handleExit = CapacitiveSensor(15, 2); // 500-1000 ohm resistor between pins D8 (send) and D4 (receive).
 
-long enterThreshold = 100;
-long exitThreshold = 100;
-int unlockDelay = 3000; //unlock delay in ms
+const long enterThreshold = 100;
+const long exitThreshold = 100;
+const int unlockDelay = 1500; //unlock delay in ms
 boolean enterState = true;  //true = last person was entering. false = last person was exiting.
-String lockBuildingName = "Building A"; //building name associated with this particular lock
+const String lockBuildingName = "Building A"; //building name associated with this particular lock
 
 void setup() {
   Serial.begin(9600); //9600 baud
@@ -72,7 +72,7 @@ void setup() {
 
 //NEW, UNTESTED 2/10
 void loop() { //TODO: fix. also conditional on the fact that person entering must touch door handle before rfid reader picks up UID.
-  delay(200); //TODO inefficient. 200 ms delay
+  delay(300); //TODO inefficient. 200 ms delay
   updateEnterState(); //checks door handles
   if (!enterState && exitHandleTouched()) { //if exit handle last touched and currently touched
     doorUnlock(); //still needs to sense rfid at some point, coded further below.
@@ -90,6 +90,9 @@ void loop() { //TODO: fix. also conditional on the fact that person entering mus
     }
   }
 }
+
+
+
 //
 //void loop() {
 //
