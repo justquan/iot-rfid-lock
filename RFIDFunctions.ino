@@ -35,16 +35,16 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
   String studentName = getFirebaseStudentName(sensedUID);
   if (studentName == "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
     Serial.println(" Access Denied. Name doesn't exist. ");
-    delay(500); //TODO: remove later, inefficient
+    delay(250); //TODO: remove later, inefficient
   }
   else if (checkStudentInBuilding(sensedUID)) {  //if student is already in the building, then deny access.
     Serial.println(" Access Denied. Student is already in building. ");
-    delay(500); //TODO: remove later, inefficient
+    delay(250); //TODO: remove later, inefficient
   }
   else {
     updateFBStudentStatus(sensedUID, "in");
     updateFBStudentLastLoc(sensedUID, lockBuildingName);
-    doorUnlock();
+    doorTempUnlock();
     //    TODO: test
   }
 }
@@ -53,7 +53,6 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
 void checkRFIDExit (String sensedUID) {
   updateFBStudentStatus(sensedUID, "out");
   updateFBStudentLastLoc(sensedUID, lockBuildingName); //redundant
-  //TODO: add code / function updating firebase values
 }
 
 //

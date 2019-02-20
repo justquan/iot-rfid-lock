@@ -1,4 +1,3 @@
-//
 ////old functions from BEFORE 2/10. now switched to new system
 //boolean exitingStudent() {
 //  long handleVal = handleEnter.capacitiveSensor(30);
@@ -31,11 +30,20 @@
 //  }
 //}
 
-void doorUnlock() {
+//Temporary Unlocks door before relocking
+void doorTempUnlock() {
   Serial.println("Unlocking Door.");
-  //TODO: code for unlocking
+  digitalWrite(lockRelayPin, HIGH);
   delay(unlockDelay);
   Serial.println("Locking Door.");
-  //TODO: make code locking door for 5 seconds
+  digitalWrite(lockRelayPin, LOW);
 }
+
+//void handleSensorPowerOn() {
+//  digitalWrite(handleSensorSwitch, HIGH);
+//}
+//
+//void handleSensorPowerOff() {
+//  digitalWrite(handleSensorSwitch, LOW);
+//}
 

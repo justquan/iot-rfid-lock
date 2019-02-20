@@ -26,8 +26,7 @@ String generateStudentNamePath(String UID) {
 String getFirebaseData (String path) {
   String firebaseData = Firebase.getString(path);  //Gets string at PATH
   checkFirebaseFail("getting data from Firebase");  //Check is Firebase.getString(String path) failed
-  //  yield();
-  delay(100); //inefficient
+    yield();  //delays for a tiny amount of time
   return firebaseData; //returns UID
 }
 
