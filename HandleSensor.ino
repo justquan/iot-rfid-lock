@@ -4,7 +4,6 @@ void printEnterHandle() {
   long enterVal = handleEnter.capacitiveSensor(30);
   Serial.print("Enter handle value: ");
   Serial.println(enterVal);
-  //  delay(250);
   yield();
 }
 
@@ -13,7 +12,6 @@ void printExitHandle() {
   long exitVal = handleExit.capacitiveSensor(30);
   Serial.print("Exit handle value: ");
   Serial.println(exitVal);
-//  delay(10);
   yield();
 }
 

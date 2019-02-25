@@ -35,17 +35,16 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
   String studentName = getFirebaseStudentName(sensedUID);
   if (studentName == "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
     Serial.println(" Access Denied. Name doesn't exist. ");
-    delay(250); //TODO: remove later, inefficient
+    delay(50); //TODO: remove later, inefficient
   }
   else if (checkStudentInBuilding(sensedUID)) {  //if student is already in the building, then deny access.
     Serial.println(" Access Denied. Student is already in building. ");
-    delay(250); //TODO: remove later, inefficient
+    delay(50); //TODO: remove later, inefficient
   }
   else {
     updateFBStudentStatus(sensedUID, "in");
     updateFBStudentLastLoc(sensedUID, lockBuildingName);
     doorTempUnlock();
-    //    TODO: test
   }
 }
 
@@ -54,23 +53,3 @@ void checkRFIDExit (String sensedUID) {
   updateFBStudentStatus(sensedUID, "out");
   updateFBStudentLastLoc(sensedUID, lockBuildingName); //redundant
 }
-
-//
-////OLD. use checkrfidexit() and checkrfidenter()
-//void checkRFID(String currentUID) {
-//  String databaseUID = getFirebaseData("/Students/0001/UID"); //TODO: change to search through list of all students
-//  Serial.print("Current UID: ");
-//  Serial.println(currentUID);
-//  Serial.print("UID in database: ");
-//  Serial.println(databaseUID);
-//  if (currentUID == databaseUID) //change UID of the card that you want to give access
-//  {
-//    Serial.println(" Access Granted ");
-//    Serial.println();
-//  }
-//  else   {
-//    Serial.println(" Access Denied ");
-//    delay(1000);
-//  }
-//}
-

@@ -1,4 +1,4 @@
-#include "Map.h"
+#include "Map.h"  //Includes pin assignments and libraries
 
 void setup() {
   //  handleSensorPowerOff();
@@ -25,12 +25,11 @@ void setup() {
   //  handleExit.set_CS_AutocaL_Millis(0xFFFFFFFF); // turn off autocalibrate on channel 1
 }
 
-//NEW, UNTESTED 2/10
 void loop() { //TODO: fix. also conditional on the fact that person entering must touch door handle before rfid reader picks up UID.
-  delay(100); //TODO inefficient.
+  delay(50); //TODO inefficient.
   updateEnterState(); //checks door handles
   if (!enterState && exitHandleTouched()) { //if exit handle last touched and currently touched
-    doorTempUnlock(); //still needs to sense rfid at some point, coded further below.
+    doorTempUnlock();
   }
   String sensedUID = getCurrentRFID(); //gets current RFID card from reader
   if (sensedUID == "none") { //if no valid RFID detected by reader
@@ -45,32 +44,4 @@ void loop() { //TODO: fix. also conditional on the fact that person entering mus
     }
   }
 }
-
-
-
-//
-//void loop() {
-//
-//    checkExit();  //If person is exiting, open the door automatically. TODO: add code for sending RFID in certain scenarios.
-//    delay(200); //TODO inefficient. 200 ms delay.
-//    String sensedUID = getCurrentRFID(); //gets current RFID card from reader
-//    if (sensedUID == "none") { //if no valid RFID detected by reader
-//      return; //goes back to start of the loop.
-//    }
-//    else {  //there is an RFID element present
-//      checkRFID(sensedUID);  //passes on UID to a method to check if the UID is valid and to perform the appropriate actions
-//    }
-//}
-
-//Trying to receive data:
-//  Serial.println(getFirebaseData("/Students/80 C4 12 BB/Name"));
-//  delay(50);
-//  Serial.println(getFirebaseData("/Students/0001/Title"));
-//  delay(50);
-//  Serial.println(getFirebaseData("/Students/eee"));
-//  delay(50);
-
-//Printing capacitative sensor values:
-//printEnterHandle();
-//printExitHandle();
 
