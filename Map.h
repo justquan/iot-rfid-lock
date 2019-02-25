@@ -27,12 +27,18 @@
 #include <SPI.h>
 #include <MFRC522.h>  //rfid reader
 #include <CapacitiveSensor.h> //capacitative sensor door handles
+#include <elapsedMillis.h> // library for elapsed time
 
 //Firebase and Wifi
 #define FIREBASE_HOST "secondasrtest.firebaseio.com"  //Firebase name. Format: INSERT_NAME.firebaseio.com (Don't inlude "https" or "/")
 #define FIREBASE_AUTH "z30eo7UMbHrcrSlgPpmWvSCHY01JTrnSKDTHZu6X"  //Firebase secret. Deprecated, may want to find another way.
 #define WIFI_SSID "justinq" //Network name
 #define WIFI_PASSWORD "funwithjoemar" //Network password
+
+//Debugging
+static boolean DEBUG = true;
+elapsedMillis timeElapsed = 0;  //for debugging. Should periodically reset to 0 to prevent overflow
+
 
 //RFID Pins
 #define SS_PIN 4  //4 goes to D2 on the ESP

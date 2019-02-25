@@ -26,7 +26,7 @@ String generateStudentNamePath(String UID) {
 String getFirebaseData (String path) {
   String firebaseData = Firebase.getString(path);  //Gets string at PATH
   checkFirebaseFail("getting data from Firebase");  //Check is Firebase.getString(String path) failed
-    yield();  //delays for a tiny amount of time
+  yield();  //delays for a tiny amount of time
   return firebaseData; //returns UID
 }
 
@@ -71,7 +71,6 @@ void updateFBStudentStatus(String UID, String updatedVal) {
   Serial.println(updatedVal);
 }
 
-//TODO: test
 void updateFBStudentLastLoc(String UID, String updatedVal) {
   String path = generateLastLocPath (UID);
   Firebase.setString(path, updatedVal);
@@ -79,5 +78,25 @@ void updateFBStudentLastLoc(String UID, String updatedVal) {
   Serial.print(path);
   Serial.print(" with value: ");
   Serial.println(updatedVal);
+}
+
+//TODO: TEST 2/25. UNTESTED. Only searches through a single UID, so might want to rand/ UID each time or search through actula UIDs in the system.
+//for gathering data nad averaging the amount of time it takes to find and update info for a particular student 
+void testFBDelay(String UID, int trials) {
+  Serial.println("Start of testFBDelay()");
+  long totalTime = 0; //cumulative value of all of the time taken.
+  for (int i = 0; i < trials; i++) {
+    timeElapsed = 0;  //resetting variable, because it starts counting after device is reset, and at all times otherwise.
+    //do stuff
+    checkRFIDEnter(UID);  //TODO: change in firebase and check a "test database" with 100, 1000, and 10000 made-up UIDs.
+    //end of doing stuff
+    Serial.println(timeElapsed);
+    totalTime += timeElapsed;
+  }
+  long averageTime = totalTime / trials;
+  Serial.print("Average time taken: ");
+  Serial.println(averageTime);
+  Serial.println("END of testFBDelay()");
+  delay(10000); //10s delay
 }
 
