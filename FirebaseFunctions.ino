@@ -1,4 +1,3 @@
-
 //get returns a student ID from Firebase given a certain path
 //if the path is just in one group (i.e. "students"), you don't need a / in the beginning.
 //if the path is in two groups (i.e. "UID" in "students"), the PATH is "students/UID".
@@ -7,19 +6,18 @@
 //Firebase Library doc: https://media.readthedocs.org/pdf/firebase-arduino/latest/firebase-arduino.pdf
 //set vs push. 'set' changes a value in the firebase to a value. Push appends a compltely new variable to the path location
 
-
 String generateStatusPath (String UID) {
-  String statusFirebasePath = "/Students/" + UID + "/status/"; //concatonates sensed UID to "/Students/" to create checkable PATH
+  String statusFirebasePath = "/" + dataCategory + "/" + UID + "/status/"; //concatonates sensed UID to "/Students/" to create checkable PATH
   return statusFirebasePath;
 }
 
 String generateLastLocPath (String UID) {
-  String lastlocFirebasePath = "/Students/" + UID + "/lastloc/"; //concatonates sensed UID to "/Students/" to create checkable PATH
+  String lastlocFirebasePath = "/" + dataCategory + "/" + UID + "/lastloc/"; //concatonates sensed UID to "/Students/" to create checkable PATH
   return lastlocFirebasePath;
 }
 
 String generateStudentNamePath(String UID) {
-  String nameFirebasePath = "/Students/" + UID + "/Name/"; //concatonates sensed UID to "/Students/" to create checkable PATH
+  String nameFirebasePath = "/" + dataCategory + "/" + UID + "/Name/"; //concatonates sensed UID to "/Students/" to create checkable PATH
   return nameFirebasePath;
 }
 
@@ -81,7 +79,7 @@ void updateFBStudentLastLoc(String UID, String updatedVal) {
 }
 
 //TODO: TEST 2/25. UNTESTED. Only searches through a single UID, so might want to rand/ UID each time or search through actula UIDs in the system.
-//for gathering data nad averaging the amount of time it takes to find and update info for a particular student 
+//for gathering data nad averaging the amount of time it takes to find and update info for a particular student
 void testFBDelay(String UID, int trials) {
   Serial.println("Start of testFBDelay()");
   long totalTime = 0; //cumulative value of all of the time taken.
@@ -94,9 +92,46 @@ void testFBDelay(String UID, int trials) {
     totalTime += timeElapsed;
   }
   long averageTime = totalTime / trials;
-  Serial.print("Average time taken: ");
+  Serial.print("Avg time: ");
   Serial.println(averageTime);
   Serial.println("END of testFBDelay()");
   delay(10000); //10s delay
 }
 
+//untested 2/27
+//same as testFBDelay() but with random UIDs made each time.
+void testRandomFBDelay(int trials) {
+  Serial.println("Start of testRandomFBDelay()");
+  long totalTime = 0; //cumulative value of all of the time taken.
+  for (int i = 0; i < trials; i++) {
+    String randUID = generateRandomUID(); //not included in timeElapsed, because randomUID isn't generated during actual process
+    timeElapsed = 0;  //resetting variable, because it starts counting after device is reset, and at all times otherwise.
+    //do stuff
+    checkRFIDEnter(randUID);  //TODO: change in firebase and check a "test database" with 100, 1000, and 10000 made-up UIDs.
+    //end of doing stuff
+    Serial.println(timeElapsed);
+    totalTime += timeElapsed;
+  }
+  long averageTime = totalTime / trials;
+  Serial.print("Avg time: ");
+  Serial.println(averageTime);
+  Serial.println("END of testRandomFBDelay()");
+  delay(10000); //10s delay
+}
+
+//UNTESTED 2/27
+String generateRandomUID() {
+  String randomUID = "";
+  for (int i = 0; i < 11; i++) {  //loops 11 times because 11 characters (including spaces) in UID
+    char letter = ' ';
+    if (i != 2 || i != 5 || i != 8) { // if in 3rd, 6th, or 9th spot of the string, use a ' '
+      byte randomValue = random(0, 37);
+      char letter = randomValue + 'a';
+      if (randomValue > 26) {
+        letter = (randomValue - 26) + '0';
+      }
+    }
+    randomUID += letter;
+  }
+  return randomUID;
+}

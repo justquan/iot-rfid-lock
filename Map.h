@@ -34,6 +34,7 @@
 #define FIREBASE_AUTH "z30eo7UMbHrcrSlgPpmWvSCHY01JTrnSKDTHZu6X"  //Firebase secret. Deprecated, may want to find another way.
 #define WIFI_SSID "justinq" //Network name
 #define WIFI_PASSWORD "funwithjoemar" //Network password
+const String dataCategory = "Students"; //Important string. This is the Firebase category that the program checks for UIDs. i.e. checks /
 
 //Debugging
 static boolean DEBUG = true;

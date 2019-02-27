@@ -21,7 +21,6 @@ String getCurrentRFID() {
     content.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
   content.toUpperCase();
-
   Serial.println();
   String returnedString = content.substring(1);//takes off first character
   return returnedString;
@@ -34,11 +33,11 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
   Serial.println(sensedUID);
   String studentName = getFirebaseStudentName(sensedUID);
   if (studentName == "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
-    Serial.println(" Access Denied. Name doesn't exist. ");
+    Serial.println("Access Denied. Name doesn't exist.");
     delay(50); //TODO: remove later, inefficient
   }
   else if (checkStudentInBuilding(sensedUID)) {  //if student is already in the building, then deny access.
-    Serial.println(" Access Denied. Student is already in building. ");
+    Serial.println("Access Denied. Student already in building.");
     delay(50); //TODO: remove later, inefficient
   }
   else {
