@@ -29,18 +29,23 @@ String getCurrentRFID() {
 //UNTESTED 2/10
 //For processing RFID UID when entering
 void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign with +
-  Serial.print("Sensed UID: ");
-  Serial.println(sensedUID);
-  String studentName = getFirebaseStudentName(sensedUID);
-  if (studentName == "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
-    Serial.println("Access Denied. Name doesn't exist.");
-    delay(50); //TODO: remove later, inefficient
+  if (PRINTING) {
+    Serial.print("Sensed UID: ");
+    Serial.println(sensedUID);
+  }
+  if (!studentExists(sensedUID)) {
+    if (PRINTING) {
+      Serial.println("Access Denied. Student name doesn't exist.");
+    }
+    yield();
   }
   else if (checkStudentInBuilding(sensedUID)) {  //if student is already in the building, then deny access.
-    Serial.println("Access Denied. Student already in building.");
-    delay(50); //TODO: remove later, inefficient
+    if (PRINTING) {
+      Serial.println("Access Denied. Student already in building.");
+    }
+    yield();
   }
-  else {
+  else {  //Note: If the name doesn't exist but somehow the function gets to this point, a new entry will be added to the Firebase database with the UID, with blank information.
     updateFBStudentStatus(sensedUID, "in");
     updateFBStudentLastLoc(sensedUID, lockBuildingName);
     doorTempUnlock();
@@ -49,6 +54,26 @@ void checkRFIDEnter(String sensedUID) { //TODO: TEST. Especially string addign w
 
 //For processing RFID UID when exiting
 void checkRFIDExit (String sensedUID) {
-  updateFBStudentStatus(sensedUID, "out");
-  updateFBStudentLastLoc(sensedUID, lockBuildingName); //redundant
+  if (studentExists(sensedUID)) {
+    updateFBStudentStatus(sensedUID, "out");
+    updateFBStudentLastLoc(sensedUID, lockBuildingName); //redundant
+  }
+}
+
+//Generates random XX XX XX XX UID
+String generateRandomUID() {
+  String randomUID = "";
+  for (int i = 0; i < 11; i++) {  //loops 11 times because 11 characters (including spaces) in UID
+    char letter = ' ';
+    if (i != 2 && i != 5 && i != 8) { // if in 3rd, 6th, or 9th spot of the string, use a ' '
+      byte randomValue = random(0, 37);
+      letter = randomValue + 'a';
+      if (randomValue > 26) {
+        letter = (randomValue - 26) + '0';
+      }
+    }
+    randomUID += letter;
+  }
+  randomUID.toUpperCase();
+  return randomUID;
 }

@@ -32,8 +32,10 @@ String getFirebaseStudentName (String sensedUID) {
   String checkedFirebasePath = generateStudentNamePath(sensedUID);
   String studentName = getFirebaseData(checkedFirebasePath);  //checked student's name according to the database/ If UID doesn't exist in Firebase, returns empty string.
   checkFirebaseFail("getting student name from Firebase");  //Check is Firebase.getString(String path) failed
-  Serial.print("Student name: ");
-  Serial.println(studentName);
+//  if (!PRINTING) {
+    Serial.print("Student name: ");
+    Serial.println(studentName);
+//  }
   return studentName;
 }
 
@@ -78,10 +80,24 @@ void updateFBStudentLastLoc(String UID, String updatedVal) {
   Serial.println(updatedVal);
 }
 
-//TODO: TEST 2/25. UNTESTED. Only searches through a single UID, so might want to rand/ UID each time or search through actula UIDs in the system.
+//checks to see if students exists in Firebase database according to their UID
+boolean studentExists(String UID) { //TODO: address how this is based on the name only, so if a FIrebase entry with a UID only has the lastloc and status, it would be considered an invalid student
+  String studentName = getFirebaseStudentName(UID);
+  if (studentName == "") {//empty string returned from accessing nonexistent UID in FIrebase means student is not in system
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+//Only searches through a single UID, so might want to rand/ UID each time or search through actula UIDs in the system.
 //for gathering data nad averaging the amount of time it takes to find and update info for a particular student
+//Can use to test response time with a UID that actually does match in the system.
 void testFBDelay(String UID, int trials) {
   Serial.println("Start of testFBDelay()");
+  checkRFIDEnter(generateRandomUID());  //This is a 'throwaway test', because the first check always takes 1000=1500 ms instead of the normal ~200 ms to process.
+  Serial.println("First UID uncounted test done");
   long totalTime = 0; //cumulative value of all of the time taken.
   for (int i = 0; i < trials; i++) {
     timeElapsed = 0;  //resetting variable, because it starts counting after device is reset, and at all times otherwise.
@@ -100,8 +116,11 @@ void testFBDelay(String UID, int trials) {
 
 //untested 2/27
 //same as testFBDelay() but with random UIDs made each time.
+//Tests with (very likely) all random UIDs not matching. Matching UIDs may vary the response time.
 void testRandomFBDelay(int trials) {
   Serial.println("Start of testRandomFBDelay()");
+  checkRFIDEnter(generateRandomUID());  //This is a 'throwaway test', because the first check always takes 1000=1500 ms instead of the normal ~200 ms to process.
+  Serial.println("First UID uncounted test done");
   long totalTime = 0; //cumulative value of all of the time taken.
   for (int i = 0; i < trials; i++) {
     String randUID = generateRandomUID(); //not included in timeElapsed, because randomUID isn't generated during actual process
@@ -117,21 +136,4 @@ void testRandomFBDelay(int trials) {
   Serial.println(averageTime);
   Serial.println("END of testRandomFBDelay()");
   delay(10000); //10s delay
-}
-
-//UNTESTED 2/27
-String generateRandomUID() {
-  String randomUID = "";
-  for (int i = 0; i < 11; i++) {  //loops 11 times because 11 characters (including spaces) in UID
-    char letter = ' ';
-    if (i != 2 || i != 5 || i != 8) { // if in 3rd, 6th, or 9th spot of the string, use a ' '
-      byte randomValue = random(0, 37);
-      char letter = randomValue + 'a';
-      if (randomValue > 26) {
-        letter = (randomValue - 26) + '0';
-      }
-    }
-    randomUID += letter;
-  }
-  return randomUID;
 }

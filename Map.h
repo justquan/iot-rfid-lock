@@ -38,6 +38,7 @@ const String dataCategory = "Students"; //Important string. This is the Firebase
 
 //Debugging
 static boolean DEBUG = true;
+static boolean PRINTING = false;
 elapsedMillis timeElapsed = 0;  //for debugging. Should periodically reset to 0 to prevent overflow
 
 

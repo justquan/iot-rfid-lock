@@ -26,7 +26,7 @@ void setup() {
 }
 
 void loop() { //TODO: fix. also conditional on the fact that person entering must touch door handle before rfid reader picks up UID.
-  delay(50); //TODO inefficient.
+  delay(25); //TODO inefficient.
   updateEnterState(); //checks door handles
   if (!enterState && exitHandleTouched()) { //if exit handle last touched and currently touched
     doorTempUnlock();
@@ -43,5 +43,10 @@ void loop() { //TODO: fix. also conditional on the fact that person entering mus
       checkRFIDExit(sensedUID);
     }
   }
+
+//testRandomFBDelay(20);
+//testFBDelay("AA AA AA AA", 30);
+//delay(1000000);
+
 }
 
