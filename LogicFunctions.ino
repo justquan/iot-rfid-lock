@@ -6,12 +6,3 @@ void doorTempUnlock() {
   Serial.println("Locking Door.");
   digitalWrite(lockRelayPin, LOW);
 }
-
-//void handleSensorPowerOn() {
-//  digitalWrite(handleSensorSwitch, HIGH);
-//}
-//
-//void handleSensorPowerOff() {
-//  digitalWrite(handleSensorSwitch, LOW);
-//}
-

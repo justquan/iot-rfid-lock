@@ -23,7 +23,7 @@ String generateStudentNamePath(String UID) {
 
 String getFirebaseData (String path) {
   String firebaseData = Firebase.getString(path);  //Gets string at PATH
-  checkFirebaseFail("getting data from Firebase");  //Check is Firebase.getString(String path) failed
+  //  checkFirebaseFail("getting data from Firebase");  //Check is Firebase.getString(String path) failed
   yield();  //delays for a tiny amount of time
   return firebaseData; //returns UID
 }
@@ -32,10 +32,10 @@ String getFirebaseStudentName (String sensedUID) {
   String checkedFirebasePath = generateStudentNamePath(sensedUID);
   String studentName = getFirebaseData(checkedFirebasePath);  //checked student's name according to the database/ If UID doesn't exist in Firebase, returns empty string.
   checkFirebaseFail("getting student name from Firebase");  //Check is Firebase.getString(String path) failed
-//  if (!PRINTING) {
-    Serial.print("Student name: ");
-    Serial.println(studentName);
-//  }
+  //  if (!PRINTING) {
+  Serial.print("Student name: ");
+  Serial.println(studentName);
+  //  }
   return studentName;
 }
 
@@ -58,6 +58,7 @@ void checkFirebaseFail(String msg) { //string is the message / the instance in w
     Serial.print("Firebase failed while ");
     Serial.print(msg);  //prints given message / place where Firebase failed
     Serial.println(Firebase.error()); //Sometimes doesn't print any error but error still exists
+    ESP.reset();
   }
 }
 
@@ -65,6 +66,7 @@ void checkFirebaseFail(String msg) { //string is the message / the instance in w
 void updateFBStudentStatus(String UID, String updatedVal) {
   String path = generateStatusPath(UID);
   Firebase.setString(path, updatedVal);
+  checkFirebaseFail("sending student status to Firebase");  //Check is Firebase.getString(String path) failed
   Serial.print("Updated Firebase status at");
   Serial.print(path);
   Serial.print(" with value: ");
@@ -74,6 +76,7 @@ void updateFBStudentStatus(String UID, String updatedVal) {
 void updateFBStudentLastLoc(String UID, String updatedVal) {
   String path = generateLastLocPath (UID);
   Firebase.setString(path, updatedVal);
+  checkFirebaseFail("sending student lastloc us to Firebase");  //Check is Firebase.getString(String path) failed
   Serial.print("Updated Firebase lastloc at");
   Serial.print(path);
   Serial.print(" with value: ");
@@ -136,4 +139,10 @@ void testRandomFBDelay(int trials) {
   Serial.println(averageTime);
   Serial.println("END of testRandomFBDelay()");
   delay(10000); //10s delay
+}
+
+//sends and receives random "repeatValue" in database to maintain constant communication to prevent firebase arduino from timing out.
+void constFBComms() {
+  String repeatValue = getFirebaseData("repeatValue");
+  Firebase.setString("repeatValue", "AA");
 }

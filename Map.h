@@ -38,7 +38,7 @@ const String dataCategory = "Students"; //Important string. This is the Firebase
 
 //Debugging
 static boolean DEBUG = true;
-static boolean PRINTING = false;
+static boolean PRINTING = true;
 elapsedMillis timeElapsed = 0;  //for debugging. Should periodically reset to 0 to prevent overflow
 
 
@@ -55,9 +55,9 @@ CapacitiveSensor handleExit = CapacitiveSensor(15, 2); // 500-1000 ohm resistor 
 //With 8.5-9V battery attached to the solenoid, there's a .6A current draw 
 int lockRelayPin = 16;  //Pin D0, to Signal pin of relay
 
-const long enterThreshold = 70;
-const long exitThreshold = 70;
-const int unlockDelay = 2500; //unlock delay in ms
+const long enterThreshold = 45;//5 ok
+const long exitThreshold = 45;//75 ok
+const int unlockDelay = 1500; //unlock delay in ms
 boolean enterState = true;  //true = last person was entering. false = last person was exiting.
 const String lockBuildingName = "Building A"; //building name associated with this particular lock
 
