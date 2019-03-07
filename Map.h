@@ -55,8 +55,8 @@ CapacitiveSensor handleExit = CapacitiveSensor(15, 2); // 500-1000 ohm resistor 
 //With 8.5-9V battery attached to the solenoid, there's a .6A current draw 
 int lockRelayPin = 16;  //Pin D0, to Signal pin of relay
 
-const long enterThreshold = 45;//5 ok
-const long exitThreshold = 45;//75 ok
+const long enterThreshold = 40;//5 ok
+const long exitThreshold = 40;//75 ok
 const int unlockDelay = 1500; //unlock delay in ms
 boolean enterState = true;  //true = last person was entering. false = last person was exiting.
 const String lockBuildingName = "Building A"; //building name associated with this particular lock
